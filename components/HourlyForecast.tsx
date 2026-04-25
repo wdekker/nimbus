@@ -1,15 +1,16 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { getWeatherInfo } from '../utils/weather';
-import { WeatherData } from '../types/weather';
+import { WeatherData, DateLocale } from '../types/weather';
 
 interface HourlyForecastProps {
   hourly: WeatherData['hourly'];
   currentHourString: string;
   isDark: boolean;
+  dateLocale: DateLocale;
 }
 
-export function HourlyForecast({ hourly, currentHourString, isDark }: HourlyForecastProps) {
+export function HourlyForecast({ hourly, currentHourString, isDark, dateLocale }: HourlyForecastProps) {
   const textColor = isDark ? '#f8fafc' : '#ffffff';
   const subTextColor = isDark ? '#cbd5e1' : '#e0f2fe';
   const cardBg = isDark ? 'rgba(30, 41, 59, 0.7)' : 'rgba(255, 255, 255, 0.2)';
@@ -29,7 +30,7 @@ export function HourlyForecast({ hourly, currentHourString, isDark }: HourlyFore
   const todayHourlyForecast = hourly.time.slice(startHourIndexToday, startHourIndexToday + 24).map((time: string, index: number) => {
     const actualIndex = startHourIndexToday + index;
     const date = new Date(time);
-    const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timeStr = date.toLocaleTimeString(dateLocale === 'system' ? undefined : dateLocale, { hour: '2-digit', minute: '2-digit' });
     const info = getWeatherInfo(hourly.weathercode[actualIndex]);
     const temp = Math.round(hourly.temperature_2m[actualIndex]);
     

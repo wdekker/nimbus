@@ -29,3 +29,4 @@ export interface LocationState {
 }
 
 export type TemperatureUnit = 'C' | 'F';
+export type DateLocale = 'system' | 'en-US' | 'en-GB';
