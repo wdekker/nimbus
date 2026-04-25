@@ -19,8 +19,12 @@ export default function RootLayout() {
         <meta property="og:description" content="A beautiful, cross-platform weather application." />
         <meta property="og:url" content="https://nimbus.dekker.dev" />
         <meta property="og:type" content="website" />
-        <script dangerouslySetInnerHTML={{ __html: `window.goatcounter = { path: function(p) { return '/nimbus' + (p || '/') } };` }} />
-        <script data-goatcounter="https://dekker-dev.goatcounter.com/count" async src="//gc.zgo.at/count.js" />
+        <script 
+          data-goatcounter="https://dekker-dev.goatcounter.com/count" 
+          data-goatcounter-settings={JSON.stringify({ path: "/nimbus" })}
+          async 
+          src="//gc.zgo.at/count.js" 
+        />
       </Head>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
