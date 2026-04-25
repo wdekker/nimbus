@@ -1,4 +1,4 @@
-# Nimbus
+# Bries
 
 A beautiful, high-performance, cross-platform weather application built with Expo and React Native.
 
