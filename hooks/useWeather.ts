@@ -48,7 +48,8 @@ export function useWeather() {
       const unitParam = activeUnit === 'F' ? '&temperature_unit=fahrenheit' : '';
       
       const res = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weathercode&timezone=auto&forecast_days=14${unitParam}`
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weathercode&timezone=auto&forecast_days=14${unitParam}`,
+        { cache: 'no-store' }
       );
       if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
@@ -211,19 +212,19 @@ export function useWeather() {
       
       await fetchWeather(lat!, lon!, city, loadedUnit);
 
-      intervalId = setInterval(() => {
-        if (locationState) {
-          fetchWeather(locationState.lat, locationState.lon, locationState.city);
-        }
-      }, 900000); 
     };
 
     initData();
-
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
   }, []);
+
+  useEffect(() => {
+    if (!locationState) return;
+    const intervalId = setInterval(() => {
+      fetchWeather(locationState.lat, locationState.lon, locationState.city);
+    }, 900000);
+    
+    return () => clearInterval(intervalId);
+  }, [locationState, unit]);
 
   return {
     weatherData,
