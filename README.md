@@ -1,50 +1,54 @@
-# Welcome to your Expo app 👋
+# Nimbus
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A beautiful, high-performance, cross-platform weather application built with Expo and React Native.
 
-## Get started
+## Features
+- **Cross-Platform:** Runs seamlessly on iOS, Android, and the Web.
+- **Robust Architecture:** Clean Container/Presenter split using custom React hooks for business logic.
+- **13-Day Forecast:** Detailed daily metrics in a sleek accordion UI.
+- **Hourly Timeline:** Smooth horizontal scrolling timeline for the next 24 hours.
+- **Offline First:** Caches the last known weather data via `AsyncStorage` and displays it when offline or network fails.
+- **Dynamic Localization:** Automatically converts fetched timezones into your local device time if you search for distant cities.
+- **Intelligent Autocomplete:** Search for any city globally with real-time geocoding suggestions.
 
-1. Install dependencies
+## Tech Stack
+- **Framework:** Expo & React Native
+- **Language:** TypeScript
+- **State Management:** Custom React Hooks (`useWeather`)
+- **API:** [Open-Meteo](https://open-meteo.com/) (No API Key Required!)
+- **Testing:** Jest, `@testing-library/react-native`
+- **Icons:** Lucide React Native
 
+## Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+- npm or yarn
+- Expo Go app on your mobile device (optional, for physical device testing)
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/weather.git
+   cd weather
+   ```
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+### Running the App
+To start the Expo development server:
 ```bash
-npm run reset-project
+npm start
 ```
+- Press `w` to open the web version.
+- Press `i` to open the iOS simulator.
+- Press `a` to open the Android emulator.
+- Scan the QR code with the Expo Go app to run on a physical device.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Testing
+To run the automated Jest test suite:
+```bash
+npm test
+```

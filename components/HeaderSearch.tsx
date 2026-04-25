@@ -1,0 +1,125 @@
+import React from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Search, MapPin, X, Settings as SettingsIcon } from 'lucide-react-native';
+
+interface HeaderSearchProps {
+  isDark: boolean;
+  isSearchExpanded: boolean;
+  setIsSearchExpanded: (val: boolean) => void;
+  searchQuery: string;
+  setSearchQuery: (val: string) => void;
+  searchResults: any[];
+  setSearchResults: (val: any[]) => void;
+  handleSelectCity: (city: any) => void;
+  handleCurrentLocation: () => void;
+  setShowSettings: (val: boolean) => void;
+}
+
+export function HeaderSearch({
+  isDark, isSearchExpanded, setIsSearchExpanded, searchQuery, setSearchQuery, 
+  searchResults, setSearchResults, handleSelectCity, handleCurrentLocation, setShowSettings
+}: HeaderSearchProps) {
+  const textColor = isDark ? '#f8fafc' : '#ffffff';
+  const subTextColor = isDark ? '#cbd5e1' : '#e0f2fe';
+  const cardBg = isDark ? 'rgba(30, 41, 59, 0.7)' : 'rgba(255, 255, 255, 0.2)';
+  const activeCardBg = isDark ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255, 255, 255, 0.4)';
+
+  return (
+    <>
+      <View style={styles.headerRow}>
+        {isSearchExpanded ? (
+          <View style={[styles.searchContainer, { backgroundColor: cardBg }]}>
+            <Search size={20} color={subTextColor} />
+            <TextInput
+              style={[styles.searchInput, { color: textColor }]}
+              placeholder="Search city..."
+              placeholderTextColor={subTextColor}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus
+            />
+            <TouchableOpacity onPress={() => { setIsSearchExpanded(false); setSearchQuery(''); setSearchResults([]); }}>
+              <X size={20} color={subTextColor} />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.headerActions}>
+            <TouchableOpacity onPress={() => setIsSearchExpanded(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
+              <Search size={22} color={textColor} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCurrentLocation} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
+              <MapPin size={22} color={textColor} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowSettings(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
+              <SettingsIcon size={22} color={textColor} />
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
+      {isSearchExpanded && searchResults.length > 0 && (
+        <View style={[styles.autocompleteInline, { backgroundColor: activeCardBg }]}>
+          {searchResults.map((item, idx) => (
+            <TouchableOpacity 
+              key={idx} 
+              style={[styles.autocompleteItem, idx === searchResults.length - 1 && { borderBottomWidth: 0 }]}
+              onPress={() => handleSelectCity(item)}
+            >
+              <Text style={{ color: textColor, fontSize: 16, fontWeight: '500' }}>{item.name}</Text>
+              <Text style={{ color: subTextColor, fontSize: 12, marginTop: 2 }}>
+                {item.admin1 ? `${item.admin1}, ` : ''}{item.country}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: 'row',
+    width: '100%',
+    minHeight: 48,
+    marginBottom: 10,
+  },
+  headerActions: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    height: 48,
+    borderRadius: 24,
+  },
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  iconBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  autocompleteInline: {
+    width: '100%',
+    borderRadius: 16,
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
+  autocompleteItem: {
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+});
