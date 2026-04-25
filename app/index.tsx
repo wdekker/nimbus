@@ -36,9 +36,7 @@ export default function HomeScreen() {
     toggleUnit,
   } = useWeather();
 
-  const gradientColors = isDark 
-    ? ['#0f172a', '#1e293b'] 
-    : ['#38bdf8', '#0284c7'];
+  const gradientColors = (isDark ? ['#0f172a', '#1e293b'] : ['#38bdf8', '#0ea5e9']) as readonly [string, string, ...string[]];
 
   const textColor = isDark ? '#f8fafc' : '#ffffff';
 

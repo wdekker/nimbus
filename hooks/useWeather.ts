@@ -137,7 +137,7 @@ export function useWeather() {
   };
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: ReturnType<typeof setInterval>;
 
     const initData = async () => {
       let loadedUnit: TemperatureUnit = 'C';
