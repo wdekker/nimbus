@@ -90,7 +90,11 @@ export function useWeather() {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
-        let location = await Location.getCurrentPositionAsync({});
+        let location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+          timeout: 5000,
+          maximumAge: 300000
+        });
         const lat = location.coords.latitude;
         const lon = location.coords.longitude;
         let city = 'Local Weather';
@@ -168,7 +172,11 @@ export function useWeather() {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status === 'granted') {
-          let location = await Location.getCurrentPositionAsync({});
+          let location = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.Balanced,
+            timeout: 5000,
+            maximumAge: 300000
+          });
           lat = location.coords.latitude;
           lon = location.coords.longitude;
           

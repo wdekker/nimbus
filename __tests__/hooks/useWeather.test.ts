@@ -5,6 +5,7 @@ jest.mock('expo-location', () => ({
   requestForegroundPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
   getCurrentPositionAsync: jest.fn().mockResolvedValue({ coords: { latitude: 52.52, longitude: 13.41 } }),
   reverseGeocodeAsync: jest.fn().mockResolvedValue([{ city: 'Berlin' }]),
+  Accuracy: { Balanced: 3, High: 4, Low: 2, Lowest: 1 },
 }));
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
