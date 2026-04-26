@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Platform } from 'react-native';
+import { Platform, AppState, AppStateStatus } from 'react-native';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WeatherData, LocationState, TemperatureUnit } from '../types/weather';
@@ -219,11 +219,23 @@ export function useWeather() {
 
   useEffect(() => {
     if (!locationState) return;
+    
     const intervalId = setInterval(() => {
       fetchWeather(locationState.lat, locationState.lon, locationState.city);
     }, 900000);
     
-    return () => clearInterval(intervalId);
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        fetchWeather(locationState.lat, locationState.lon, locationState.city);
+      }
+    };
+    
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    
+    return () => {
+      clearInterval(intervalId);
+      subscription.remove();
+    };
   }, [locationState, unit]);
 
   return {
