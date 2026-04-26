@@ -53,18 +53,23 @@ export function generateHourlyItems(hourly: any, daily: any, startIndex: number,
       timeStr = date.toLocaleDateString(undefined, { weekday: 'short' });
     }
     const info = getWeatherInfo(hourly.weathercode[actualIndex]);
-    const temp = Math.round(hourly.temperature_2m[actualIndex]);
     const precip = hourly.precipitation_probability ? hourly.precipitation_probability[actualIndex] : 0;
     const wind = hourly.windspeed_10m ? hourly.windspeed_10m[actualIndex] : 0;
-
+    const humidity = hourly.relativehumidity_2m ? hourly.relativehumidity_2m[actualIndex] : 0;
+    const uv = hourly.uv_index ? hourly.uv_index[actualIndex] : 0;
+    const feelsLike = hourly.apparent_temperature ? hourly.apparent_temperature[actualIndex] : 0;
+    
     items.push({
       type: 'hour',
       timestamp: date.getTime(),
       timeStr: (isToday && index === 0) ? 'Now' : timeStr,
-      temp: `${temp}°`,
+      temp: `${Math.round(hourly.temperature_2m[actualIndex])}°`,
       icon: info.icon,
       precip,
       wind,
+      humidity,
+      uv,
+      feelsLike: `${Math.round(feelsLike)}°`
     });
   }
 

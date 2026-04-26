@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { Sunrise, Sunset, Wind, ChevronDown, ChevronUp } from 'lucide-react-native';
+import { Sunrise, Sunset, Wind, ChevronDown, ChevronUp, Droplets, Umbrella, Thermometer, Sun } from 'lucide-react-native';
 import { getWeatherInfo, formatWindSpeed, generateHourlyItems } from '../utils/weather';
 import { WeatherData, WindSpeedUnit } from '../types/weather';
 
@@ -24,15 +24,26 @@ export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], wi
                 <Text style={[styles.hourlyTemp, { color: textColor }]}>{item.temp}</Text>
                 
                 {showDetails && (
-                  <View style={{ alignItems: 'center', marginTop: 12 }}>
-                    {item.precip > 0 ? (
-                      <Text style={{ color: '#38bdf8', fontSize: 11, fontWeight: '600', marginBottom: 6 }}>{item.precip}%</Text>
-                    ) : (
-                      <View style={{ height: 16, marginBottom: 6 }} />
-                    )}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', opacity: 0.7 }}>
-                      <Wind size={12} color={subTextColor} style={{marginRight: 4}}/>
-                      <Text style={{ fontSize: 11, color: subTextColor }}>{formatWindSpeed(item.wind, windUnit)}</Text>
+                  <View style={{ alignItems: 'flex-start', marginTop: 16, width: '100%', paddingLeft: 4 }}>
+                    <View style={styles.detailRow}>
+                      <Umbrella size={12} color={item.precip > 0 ? '#38bdf8' : subTextColor} style={styles.detailIcon}/>
+                      <Text style={[styles.detailText, { color: item.precip > 0 ? '#38bdf8' : subTextColor }]}>{item.precip}%</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Wind size={12} color={subTextColor} style={styles.detailIcon}/>
+                      <Text style={[styles.detailText, { color: subTextColor }]}>{formatWindSpeed(item.wind, windUnit)}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Droplets size={12} color={subTextColor} style={styles.detailIcon}/>
+                      <Text style={[styles.detailText, { color: subTextColor }]}>{item.humidity}%</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Thermometer size={12} color={subTextColor} style={styles.detailIcon}/>
+                      <Text style={[styles.detailText, { color: subTextColor }]}>{item.feelsLike}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Sun size={12} color={item.uv > 5 ? '#fbbf24' : subTextColor} style={styles.detailIcon}/>
+                      <Text style={[styles.detailText, { color: item.uv > 5 ? '#fbbf24' : subTextColor }]}>UV {Math.round(item.uv)}</Text>
                     </View>
                   </View>
                 )}
@@ -114,4 +125,17 @@ const styles = StyleSheet.create({
   },
   hourlyTime: { fontSize: 14, fontWeight: '500' },
   hourlyTemp: { fontSize: 18, fontWeight: '600' },
+  detailRow: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    opacity: 0.8, 
+    marginBottom: 8
+  },
+  detailIcon: {
+    marginRight: 6
+  },
+  detailText: {
+    fontSize: 11,
+    fontWeight: '500'
+  }
 });

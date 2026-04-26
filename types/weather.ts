@@ -15,6 +15,9 @@ export interface WeatherData {
     weathercode: number[];
     precipitation_probability: number[];
     windspeed_10m: number[];
+    relativehumidity_2m: number[];
+    uv_index: number[];
+    apparent_temperature: number[];
   };
   daily: {
     time: string[];
