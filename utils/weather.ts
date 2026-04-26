@@ -39,3 +39,63 @@ export function formatWindSpeed(speedKmh: number, unit: WindSpeedUnit): string {
   
   return `${speedKmh.toFixed(1)} km/h`;
 }
+
+export function generateHourlyItems(hourly: any, daily: any, startIndex: number, count: number, isToday: boolean) {
+  let items: any[] = [];
+  
+  for (let index = 0; index < count; index++) {
+    const actualIndex = startIndex + index;
+    if (actualIndex >= hourly.time.length) break;
+    const date = new Date(hourly.time[actualIndex]);
+    const isMidnight = date.getHours() === 0;
+    let timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    if (isMidnight && index > 0) {
+      timeStr = date.toLocaleDateString(undefined, { weekday: 'short' });
+    }
+    const info = getWeatherInfo(hourly.weathercode[actualIndex]);
+    const temp = Math.round(hourly.temperature_2m[actualIndex]);
+    const precip = hourly.precipitation_probability ? hourly.precipitation_probability[actualIndex] : 0;
+    const wind = hourly.windspeed_10m ? hourly.windspeed_10m[actualIndex] : 0;
+
+    items.push({
+      type: 'hour',
+      timestamp: date.getTime(),
+      timeStr: (isToday && index === 0) ? 'Now' : timeStr,
+      temp: `${temp}°`,
+      icon: info.icon,
+      precip,
+      wind,
+    });
+  }
+
+  if (daily && daily.sunrise && daily.sunset && items.length > 0) {
+    const minTime = items[0].timestamp;
+    const maxTime = items[items.length - 1].timestamp + 3600000;
+    
+    for (let i = 0; i < daily.time.length; i++) {
+      if (daily.sunrise[i]) {
+        const t = new Date(daily.sunrise[i]).getTime();
+        if (t > minTime && t < maxTime) {
+          items.push({
+            type: 'sunrise',
+            timestamp: t,
+            timeStr: new Date(t).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+          });
+        }
+      }
+      if (daily.sunset[i]) {
+        const t = new Date(daily.sunset[i]).getTime();
+        if (t > minTime && t < maxTime) {
+          items.push({
+            type: 'sunset',
+            timestamp: t,
+            timeStr: new Date(t).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+          });
+        }
+      }
+    }
+  }
+
+  items.sort((a, b) => a.timestamp - b.timestamp);
+  return items;
+}

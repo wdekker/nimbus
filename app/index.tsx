@@ -119,6 +119,7 @@ export default function HomeScreen() {
         <DailyForecast 
           daily={weatherData.daily}
           hourly={weatherData.hourly}
+          windUnit={windUnit}
           isDark={isDark}
         />
 

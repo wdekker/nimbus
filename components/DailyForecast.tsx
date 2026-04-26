@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { getWeatherInfo } from '../utils/weather';
-import { WeatherData } from '../types/weather';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { getWeatherInfo, generateHourlyItems } from '../utils/weather';
+import { WeatherData, WindSpeedUnit } from '../types/weather';
+import { HourlyScrollList } from './HourlyForecast';
 
 interface DailyForecastProps {
   daily: WeatherData['daily'];
   hourly: WeatherData['hourly'];
+  windUnit: WindSpeedUnit;
   isDark: boolean;
 }
 
-export function DailyForecast({ daily, hourly, isDark }: DailyForecastProps) {
+export function DailyForecast({ daily, hourly, windUnit, isDark }: DailyForecastProps) {
   const [expandedDayIndex, setExpandedDayIndex] = useState<number | null>(null);
 
   const textColor = isDark ? '#f8fafc' : '#ffffff';
@@ -29,16 +31,7 @@ export function DailyForecast({ daily, hourly, isDark }: DailyForecastProps) {
   });
 
   const getHourlyForDay = (dayIndex: number) => {
-    const startHourIndex = dayIndex * 24;
-    return hourly.time.slice(startHourIndex, startHourIndex + 24).map((time: string, index: number) => {
-      const actualIndex = startHourIndex + index;
-      const date = new Date(time);
-      const timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-      const info = getWeatherInfo(hourly.weathercode[actualIndex]);
-      const temp = Math.round(hourly.temperature_2m[actualIndex]);
-      
-      return { time: timeStr, temp: `${temp}°`, icon: info.icon };
-    });
+    return generateHourlyItems(hourly, daily, dayIndex * 24, 24, false);
   };
 
   return (
@@ -72,19 +65,7 @@ export function DailyForecast({ daily, hourly, isDark }: DailyForecastProps) {
             
             {isExpanded && (
               <View style={styles.expandedHourlyContainer}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyScroll}>
-                  {getHourlyForDay(item.index).map((hourItem: any, hIndex: number) => {
-                    const HourIcon = hourItem.icon;
-                    const itemBg = isDark ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.4)';
-                    return (
-                      <View key={hIndex} style={[styles.hourlyItem, { backgroundColor: itemBg }]}>
-                        <Text style={[styles.hourlyTime, { color: subTextColor }]}>{hourItem.time}</Text>
-                        <HourIcon size={28} color={textColor} style={{ marginVertical: 8 }} />
-                        <Text style={[styles.hourlyTemp, { color: textColor }]}>{hourItem.temp}</Text>
-                      </View>
-                    );
-                  })}
-                </ScrollView>
+                <HourlyScrollList items={getHourlyForDay(item.index)} windUnit={windUnit} isDark={isDark} />
               </View>
             )}
           </View>
@@ -117,15 +98,4 @@ const styles = StyleSheet.create({
   },
   forecastDay: { fontSize: 18, fontWeight: '500' },
   forecastTemp: { fontSize: 18, fontWeight: '600' },
-  hourlyScroll: { flexDirection: 'row' },
-  hourlyItem: { 
-    alignItems: 'center', 
-    paddingVertical: 15, 
-    paddingHorizontal: 15, 
-    borderRadius: 20, 
-    marginRight: 12,
-    minWidth: 70
-  },
-  hourlyTime: { fontSize: 14, fontWeight: '500' },
-  hourlyTemp: { fontSize: 18, fontWeight: '600' },
 });
