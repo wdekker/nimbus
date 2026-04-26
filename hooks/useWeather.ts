@@ -8,6 +8,7 @@ const CACHE_KEY = '@weather_cache';
 const UNIT_KEY = '@weather_unit';
 const WIND_UNIT_KEY = '@weather_wind_unit';
 const SUN_EVENTS_KEY = '@weather_sun_events';
+const MOON_PHASE_KEY = '@weather_moon_phase';
 
 export function useWeather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -25,6 +26,7 @@ export function useWeather() {
   const [unit, setUnit] = useState<TemperatureUnit>('C');
   const [windUnit, setWindUnit] = useState<WindSpeedUnit>('km/h');
   const [showSunEvents, setShowSunEvents] = useState(true);
+  const [showMoonPhase, setShowMoonPhase] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export function useWeather() {
       const unitParam = activeUnit === 'F' ? '&temperature_unit=fahrenheit' : '';
       
       const res = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,relativehumidity_2m,uv_index,apparent_temperature&timezone=auto&forecast_days=14${unitParam}`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,moon_phase&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,relativehumidity_2m,uv_index,apparent_temperature&timezone=auto&forecast_days=14${unitParam}`,
         { cache: 'no-store' }
       );
       if (!res.ok) throw new Error('Network response was not ok');
@@ -161,6 +163,13 @@ export function useWeather() {
     } catch (e) {}
   };
 
+  const toggleMoonPhase = async (value: boolean) => {
+    setShowMoonPhase(value);
+    try {
+      await AsyncStorage.setItem(MOON_PHASE_KEY, JSON.stringify(value));
+    } catch (e) {}
+  };
+
   useEffect(() => {
     let intervalId: ReturnType<typeof setInterval>;
 
@@ -185,6 +194,15 @@ export function useWeather() {
           }
         } catch (err) {
           console.log('Failed to parse sun events setting');
+        }
+
+        try {
+          const savedMoonPhase = await AsyncStorage.getItem(MOON_PHASE_KEY);
+          if (savedMoonPhase !== null) {
+            setShowMoonPhase(JSON.parse(savedMoonPhase));
+          }
+        } catch (err) {
+          console.log('Failed to parse moon phase setting');
         }
 
         const cachedStr = await AsyncStorage.getItem(CACHE_KEY);
@@ -289,6 +307,7 @@ export function useWeather() {
     unit,
     windUnit,
     showSunEvents,
+    showMoonPhase,
     showSettings,
     setShowSettings,
     handleSelectCity,
@@ -297,5 +316,6 @@ export function useWeather() {
     toggleUnit,
     toggleWindUnit,
     toggleSunEvents,
+    toggleMoonPhase,
   };
 }

@@ -26,6 +26,7 @@ export interface WeatherData {
     temperature_2m_min: number[];
     sunrise: string[];
     sunset: string[];
+    moon_phase: number[];
   };
 }
 

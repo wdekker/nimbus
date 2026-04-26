@@ -1,18 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Wind } from 'lucide-react-native';
-import { getWeatherInfo, formatWindSpeed } from '../utils/weather';
+import { Wind, Moon } from 'lucide-react-native';
+import { getWeatherInfo, formatWindSpeed, getMoonPhaseInfo } from '../utils/weather';
 import { WeatherData, WindSpeedUnit } from '../types/weather';
 
 interface CurrentWeatherProps {
   weatherData: WeatherData;
   cityName: string;
   lastFetchedTime: Date | null;
+  showMoonPhase: boolean;
   isDark: boolean;
   windUnit: WindSpeedUnit;
 }
 
-export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark, windUnit }: CurrentWeatherProps) {
+export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, isDark, windUnit }: CurrentWeatherProps) {
   const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode);
   const CurrentIcon = currentInfo.icon;
   
@@ -33,6 +34,8 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark,
       }
     } catch {}
   }
+
+  const moonPhaseStr = weatherData.daily.moon_phase ? getMoonPhaseInfo(weatherData.daily.moon_phase[0]) : '';
   
   return (
     <View style={styles.currentWeather}>
@@ -41,6 +44,12 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark,
         Today, {new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long' })}
         {lastFetchedTime ? ` • Updated ${lastFetchedTime.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}` : ''}
       </Text>
+      {showMoonPhase && moonPhaseStr && (
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: localTimeStr ? 4 : 20 }}>
+          <Moon size={14} color={subTextColor} style={{ marginRight: 6 }} />
+          <Text style={{ color: subTextColor, fontSize: 14, fontWeight: '500' }}>{moonPhaseStr}</Text>
+        </View>
+      )}
       {localTimeStr && (
         <Text style={{ color: subTextColor, fontSize: 14, fontWeight: '500', marginBottom: 20 }}>
           Local Time: {localTimeStr} ({weatherData.timezone_abbreviation || weatherData.timezone})

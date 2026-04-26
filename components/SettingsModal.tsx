@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform } from 'react-native';
-import { X, Download, Sunrise } from 'lucide-react-native';
+import { X, Download, Sunrise, Moon } from 'lucide-react-native';
 import { TemperatureUnit, WindSpeedUnit } from '../types/weather';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 
@@ -13,10 +13,12 @@ interface SettingsModalProps {
   onToggleWindUnit: (unit: WindSpeedUnit) => void;
   showSunEvents: boolean;
   onToggleSunEvents: (value: boolean) => void;
+  showMoonPhase: boolean;
+  onToggleMoonPhase: (value: boolean) => void;
   isDark: boolean;
 }
 
-export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, isDark }: SettingsModalProps) {
+export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, isDark }: SettingsModalProps) {
   const { isInstallable, promptInstall } = usePWAInstall();
 
   return (
@@ -105,7 +107,8 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
 
           <View style={styles.aboutContainer}>
             <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>Timeline Events</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Sunrise size={20} color={isDark ? '#fbbf24' : '#d97706'} style={{ marginRight: 8 }} />
                 <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>Sunrise & Sunset</Text>
@@ -115,6 +118,20 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
                 onValueChange={onToggleSunEvents}
                 trackColor={{ false: isDark ? '#334155' : '#cbd5e1', true: '#38bdf8' }}
                 thumbColor={Platform.OS === 'ios' ? '#ffffff' : showSunEvents ? '#ffffff' : '#f8fafc'}
+                ios_backgroundColor={isDark ? '#334155' : '#cbd5e1'}
+              />
+            </View>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Moon size={20} color={isDark ? '#e2e8f0' : '#475569'} style={{ marginRight: 8 }} />
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>Moon Phase</Text>
+              </View>
+              <Switch
+                value={showMoonPhase}
+                onValueChange={onToggleMoonPhase}
+                trackColor={{ false: isDark ? '#334155' : '#cbd5e1', true: '#38bdf8' }}
+                thumbColor={Platform.OS === 'ios' ? '#ffffff' : showMoonPhase ? '#ffffff' : '#f8fafc'}
                 ios_backgroundColor={isDark ? '#334155' : '#cbd5e1'}
               />
             </View>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { getWeatherInfo, generateHourlyItems } from '../utils/weather';
+import { Moon } from 'lucide-react-native';
+import { getWeatherInfo, generateHourlyItems, getMoonPhaseInfo } from '../utils/weather';
 import { WeatherData, WindSpeedUnit } from '../types/weather';
 import { HourlyScrollList } from './HourlyForecast';
 
@@ -9,10 +10,11 @@ interface DailyForecastProps {
   hourly: WeatherData['hourly'];
   windUnit: WindSpeedUnit;
   showSunEvents: boolean;
+  showMoonPhase: boolean;
   isDark: boolean;
 }
 
-export function DailyForecast({ daily, hourly, windUnit, showSunEvents, isDark }: DailyForecastProps) {
+export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoonPhase, isDark }: DailyForecastProps) {
   const [expandedDayIndex, setExpandedDayIndex] = useState<number | null>(null);
 
   const textColor = isDark ? '#f8fafc' : '#ffffff';
@@ -27,8 +29,9 @@ export function DailyForecast({ daily, hourly, windUnit, showSunEvents, isDark }
     const info = getWeatherInfo(daily.weathercode[index]);
     const maxTemp = Math.round(daily.temperature_2m_max[index]);
     const minTemp = Math.round(daily.temperature_2m_min[index]);
+    const moonPhaseStr = daily.moon_phase ? getMoonPhaseInfo(daily.moon_phase[index]) : '';
 
-    return { index, day: dayStr, date: dateStr, temp: `${maxTemp}° / ${minTemp}°`, icon: info.icon };
+    return { index, day: dayStr, date: dateStr, temp: `${maxTemp}° / ${minTemp}°`, icon: info.icon, moonPhaseStr };
   });
 
   const getHourlyForDay = (dayIndex: number) => {
@@ -50,16 +53,22 @@ export function DailyForecast({ daily, hourly, windUnit, showSunEvents, isDark }
               style={styles.forecastRow}
               activeOpacity={0.7}
             >
-              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1.2 }}>
                 <Text style={[styles.forecastDay, { color: textColor, width: 45 }]}>{item.day}</Text>
                 <Text style={{ color: subTextColor, fontSize: 12, marginLeft: 8 }}>{item.date}</Text>
               </View>
               
-              <View style={{ width: 40, alignItems: 'center' }}>
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                 <Icon size={24} color={textColor} />
+                {showMoonPhase && item.moonPhaseStr && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 12, opacity: 0.7 }}>
+                    <Moon size={12} color={subTextColor} style={{ marginRight: 4 }} />
+                    <Text style={{ color: subTextColor, fontSize: 11 }}>{item.moonPhaseStr}</Text>
+                  </View>
+                )}
               </View>
               
-              <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <View style={{ flex: 0.8, alignItems: 'flex-end' }}>
                 <Text style={[styles.forecastTemp, { color: textColor, textAlign: 'right' }]}>{item.temp}</Text>
               </View>
             </TouchableOpacity>
