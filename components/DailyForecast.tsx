@@ -56,12 +56,18 @@ export function DailyForecast({ daily, hourly, isDark }: DailyForecastProps) {
               style={styles.forecastRow}
               activeOpacity={0.7}
             >
-              <View style={{flexDirection: 'row', alignItems: 'center', width: 90}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                 <Text style={[styles.forecastDay, { color: textColor, width: 45 }]}>{item.day}</Text>
                 <Text style={{ color: subTextColor, fontSize: 12, marginLeft: 8 }}>{item.date}</Text>
               </View>
-              <Icon size={24} color={textColor} />
-              <Text style={[styles.forecastTemp, { color: textColor }]}>{item.temp}</Text>
+              
+              <View style={{ width: 40, alignItems: 'center' }}>
+                <Icon size={24} color={textColor} />
+              </View>
+              
+              <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <Text style={[styles.forecastTemp, { color: textColor, textAlign: 'right' }]}>{item.temp}</Text>
+              </View>
             </TouchableOpacity>
             
             {isExpanded && (
