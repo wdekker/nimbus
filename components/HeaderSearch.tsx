@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
-import { Search, MapPin, X, Settings as SettingsIcon } from 'lucide-react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Animated, Easing } from 'react-native';
+import { Search, MapPin, X, Settings as SettingsIcon, RefreshCcw } from 'lucide-react-native';
 
 interface HeaderSearchProps {
   isDark: boolean;
@@ -12,17 +12,42 @@ interface HeaderSearchProps {
   setSearchResults: (val: any[]) => void;
   handleSelectCity: (city: any) => void;
   handleCurrentLocation: () => void;
+  handleRefresh: () => void;
+  isRefreshing: boolean;
   setShowSettings: (val: boolean) => void;
 }
 
 export function HeaderSearch({
   isDark, isSearchExpanded, setIsSearchExpanded, searchQuery, setSearchQuery, 
-  searchResults, setSearchResults, handleSelectCity, handleCurrentLocation, setShowSettings
+  searchResults, setSearchResults, handleSelectCity, handleCurrentLocation, handleRefresh, isRefreshing, setShowSettings
 }: HeaderSearchProps) {
   const textColor = isDark ? '#f8fafc' : '#ffffff';
   const subTextColor = isDark ? '#cbd5e1' : '#e0f2fe';
   const cardBg = isDark ? 'rgba(30, 41, 59, 0.7)' : 'rgba(255, 255, 255, 0.2)';
   const activeCardBg = isDark ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255, 255, 255, 0.4)';
+
+  const spinValue = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    if (isRefreshing) {
+      Animated.loop(
+        Animated.timing(spinValue, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      ).start();
+    } else {
+      spinValue.stopAnimation();
+      spinValue.setValue(0);
+    }
+  }, [isRefreshing, spinValue]);
+
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  });
 
   return (
     <>
@@ -49,6 +74,11 @@ export function HeaderSearch({
             </TouchableOpacity>
             <TouchableOpacity onPress={handleCurrentLocation} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
               <MapPin size={22} color={textColor} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleRefresh} style={[styles.iconBtn, { backgroundColor: cardBg }]} disabled={isRefreshing}>
+              <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                <RefreshCcw size={22} color={textColor} />
+              </Animated.View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowSettings(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
               <SettingsIcon size={22} color={textColor} />

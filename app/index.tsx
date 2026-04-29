@@ -114,6 +114,8 @@ export default function HomeScreen() {
           setSearchResults={setSearchResults}
           handleSelectCity={handleSelectCity}
           handleCurrentLocation={handleCurrentLocation}
+          handleRefresh={onRefresh}
+          isRefreshing={refreshing}
           setShowSettings={setShowSettings}
         />
 
