@@ -175,7 +175,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
           <View style={[styles.aboutContainer, isInstallable ? { marginTop: 0 } : {}]}>
             <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>About Bries</Text>
             <Text style={[styles.aboutText, { color: isDark ? '#f1f5f9' : '#334155' }]}>
-              Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps. It relies purely on the Open-Meteo API, requiring no API keys or personal data tracking.
+              Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps. It relies primarily on the Open-Meteo API, requiring no personal data tracking. Optional tide information requires a free, user-provided Stormglass API key.
             </Text>
             
             <TouchableOpacity onPress={() => Linking.openURL('https://github.com/wdekker/bries')} style={styles.linkButton}>
