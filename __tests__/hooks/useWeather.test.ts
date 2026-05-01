@@ -28,7 +28,7 @@ global.fetch = jest.fn(() =>
 
 describe('useWeather Hook', () => {
   it('initializes and fetches weather data', async () => {
-    const { result } = renderHook(() => useWeather());
+    const { result, unmount } = renderHook(() => useWeather());
     
     expect(result.current.loading).toBe(true);
     
@@ -39,5 +39,7 @@ describe('useWeather Hook', () => {
     expect(result.current.cityName).toBe('Berlin');
     expect(result.current.weatherData).toBeTruthy();
     expect(result.current.weatherData?.current_weather.temperature).toBe(15.5);
+
+    unmount();
   });
 });
